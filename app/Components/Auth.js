@@ -8,7 +8,7 @@ import Loader from "./Loader";
 import Background from "./Background";
 import { UploadButton, UploadDropzone } from "@uploadthing/react";
 import { useRouter } from "next/navigation";
-import { useAccount } from "wagmi";
+// import { useAccount } from "wagmi";
 
 function AuthUser() {
   const router = useRouter();

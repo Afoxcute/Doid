@@ -11,9 +11,9 @@ import html2canvas from "html2canvas";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import toast, { Toaster } from "react-hot-toast";
-import { useAccount, useConnect } from "wagmi";
-import { useSendTransaction, useWaitForTransactionReceipt } from "wagmi";
-import { parseEther } from "viem";
+// import { useAccount, useConnect } from "wagmi";
+// import { useSendTransaction, useWaitForTransactionReceipt } from "wagmi";
+// import { parseEther } from "viem";
 
 const Page = () => {
   const {
