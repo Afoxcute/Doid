@@ -20,18 +20,7 @@ const nextConfig = {
     ];
   },
   images: {
-    domains: [
-      'uploadthing.com', 
-      'lh3.googleusercontent.com',
-      'accounts.google.com',
-      'www.google.com'
-    ],
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: '**.google.com',
-      },
-    ],
+    domains: ['uploadthing.com', 'lh3.googleusercontent.com'],
   },
   webpack: (config) => {
     config.resolve.fallback = { fs: false, net: false, tls: false };
