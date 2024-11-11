@@ -1,18 +1,13 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-// import { useRouter } from "next/router";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
-import Web3 from "web3";
-import Loader from "./Loader";
+import { useRouter } from "next/navigation";
 import Background from "./Background";
 import { UploadButton, UploadDropzone } from "@uploadthing/react";
-import { useRouter } from "next/navigation";
-// import { useAccount } from "wagmi";
 
 function AuthUser() {
   const router = useRouter();
-  const { address, isConnected } = useAccount();
 
   const [matricNumber, setMatricNumber] = useState("");
   const [image, setImage] = useState("");
@@ -47,14 +42,13 @@ function AuthUser() {
   const handleCreateId = async (e) => {
     e.preventDefault();
 
-    setLoading(true); // Start loading
+    setLoading(true);
 
     const payload = {
       Matric_Number: matricNumber,
       Full_Name: name,
       Passport: image,
       Phone: phone,
-      Wallet: address,
     };
 
     try {
@@ -69,7 +63,6 @@ function AuthUser() {
       if (response.ok) {
         const result = await response.json();
         console.log("Success:", result);
-
         router.push("/card");
       } else {
         console.error("Failed to create document:", await response.json());
@@ -84,8 +77,8 @@ function AuthUser() {
   };
 
   return (
-    <motion.div className=" flex justify-center py-10">
-      <div className=" p-6 rounded-lg max-w-4xl  bg-black">
+    <motion.div className="flex justify-center py-10">
+      <div className="p-6 rounded-lg max-w-4xl bg-black">
         <Background />
 
         <motion.form
@@ -96,9 +89,6 @@ function AuthUser() {
         >
           <motion.div className="" variants={textVariants}>
             <p className="text-xl font-medium mb-1.5">
-              {/* Welcome, {user.fullName}. */}
-            </p>
-            <p className="text-white/60 mb-4 ">
               Confirm Details To Request/Access Your Institution ID
             </p>
           </motion.div>
@@ -107,13 +97,15 @@ function AuthUser() {
             className="grid grid-cols-1 md:grid-cols-2 gap-12 mt-4"
             variants={textVariants}
           >
-            {/* Matric Number Input */}
+            {/* Form fields */}
             <motion.div
               className="flex flex-col space-y-2"
               variants={inputVariants}
               custom={0}
             >
-              <label className="text-white/60">Unique ID(Matric Number, Staff ID, etc)</label>
+              <label className="text-white/60">
+                Unique ID(Matric Number, Staff ID, etc)
+              </label>
               <motion.input
                 className="border-b-2 bg-transparent border-purple-900 focus:outline-none text-white/60 w-full max-w-xs"
                 type="text"
@@ -123,7 +115,6 @@ function AuthUser() {
               />
             </motion.div>
 
-            {/* Name Input */}
             <motion.div
               className="flex flex-col space-y-2"
               variants={inputVariants}
@@ -139,23 +130,6 @@ function AuthUser() {
               />
             </motion.div>
 
-            {/* Wallet Address Input */}
-            <motion.div
-              className="flex flex-col space-y-2"
-              variants={inputVariants}
-              custom={2}
-            >
-              <label className="text-white/60">Wallet Address</label>
-              <motion.input
-                className="border-b-2 bg-transparent border-purple-900 focus:outline-none text-white/60 w-full max-w-xs"
-                value={address}
-                readOnly
-                type="text"
-                whileFocus={{ scale: 1.05 }}
-              />
-            </motion.div>
-
-            {/* Phone Number Input */}
             <motion.div
               className="flex flex-col space-y-2"
               variants={inputVariants}
@@ -172,11 +146,8 @@ function AuthUser() {
             </motion.div>
 
             <div></div>
-
-            {/* Image Upload */}
           </motion.div>
 
-          {/* Submit Button */}
           <div className="flex justify-between items-center flex-col">
             <motion.div
               className="flex flex-col space-y-2 justify-start"
@@ -185,7 +156,7 @@ function AuthUser() {
             >
               <label className="text-white/60">Image (passport photo)</label>
               <UploadDropzone
-                className="bg-[#581c87] "
+                className="bg-[#581c87]"
                 endpoint="imageUploader"
                 onClientUploadComplete={(res) => {
                   console.log("Files: ", res);
@@ -200,7 +171,6 @@ function AuthUser() {
             </motion.div>
             <motion.button
               className="mt-6 px-7 py-2 bg-purple-900 text-white rounded-md duration-300 font-medium text-center"
-              // whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
               type="submit"
               disabled={loading}
@@ -209,7 +179,6 @@ function AuthUser() {
             </motion.button>
           </div>
 
-          {/* Success Message */}
           {success && !loading && (
             <p className="text-white/60 mt-4">
               Submission Successful! Redirecting...

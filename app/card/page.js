@@ -11,22 +11,11 @@ import html2canvas from "html2canvas";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import toast, { Toaster } from "react-hot-toast";
-// import { useAccount, useConnect } from "wagmi";
-// import { useSendTransaction, useWaitForTransactionReceipt } from "wagmi";
-// import { parseEther } from "viem";
 
 const Page = () => {
-  const {
-    data: hash,
-    error,
-    isPending,
-    sendTransaction,
-  } = useSendTransaction();
-  const [fetchedData, setFetchedData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isFlipped, setIsFlipped] = useState(false);
   const reportRef = useRef();
-  // const { user } = useUser();
   const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -40,14 +29,6 @@ const Page = () => {
       setIsModalOpen(false);
     }, 300);
   };
-
-  // useEffect(() => {
-  //   if (user === undefined) return;
-
-  //   if (!user) {
-  //     router.push("/");
-  //   }
-  // }, [user, router]);
 
   const handleFlip = () => {
     setIsFlipped(!isFlipped);
@@ -71,7 +52,7 @@ const Page = () => {
 
           setFetchedData(data.data);
 
-          const lastUser = data.data[data.data.length - 1]; // Get last user data
+          const lastUser = data.data[data.data.length - 1];
           if (lastUser) {
             setLatestData({
               Full_Name: lastUser.Full_Name,
@@ -159,29 +140,12 @@ const Page = () => {
     };
   };
 
-  const account = useAccount();
-
-  const { address, isConnected } = useAccount();
-
-  async function submit(e) {
-    e.preventDefault();
-    const formData = new FormData(e.target);
-    const to = formData.get("address");
-    const value = formData.get("value");
-    sendTransaction({ to, value: parseEther(value) });
-  }
-
-  const { isLoading: isConfirming, isSuccess: isConfirmed } =
-    useWaitForTransactionReceipt({
-      hash,
-    });
-
   return (
     <div className="min-h-screen card-gradient ">
       <Toaster position="top-right" reverseOrder={false} />
       <LandingNavbar />
 
-      <div className="  flex items-center justify-center min-h-[70vh]   ">
+      <div className="flex items-center justify-center min-h-[70vh]">
         <Background />
         {loading ? (
           <Loader />
@@ -189,9 +153,8 @@ const Page = () => {
           <div>
             <ReactCardFlip isFlipped={isFlipped} flipDirection="horizontal">
               {/* Front Side of the Card */}
-
               <div className="items-center flex flex-col justify-center">
-                <div className="bg-black  rounded-lg p-6 w-fit min-w-[300px] h-[350px] relative">
+                <div className="bg-black rounded-lg p-6 w-fit min-w-[300px] h-[350px] relative">
                   <div className="flex justify-center mb-4">
                     {latestData.Passport && (
                       <img
@@ -212,7 +175,7 @@ const Page = () => {
                     </p>
                   </div>
                   {latestData.Passport && (
-                    <div className="flex justify-center  mt-[60px] ">
+                    <div className="flex justify-center mt-[60px]">
                       <img
                         src="/chip.png"
                         alt="Chip Icon"
@@ -226,15 +189,15 @@ const Page = () => {
 
               {/* Back Side of the Card */}
               <div className="items-center flex flex-col justify-center">
-                <div className="bg-black  rounded-lg p-6 w-fit max-w-[300px] h-[350px] relative space-y-8">
+                <div className="bg-black rounded-lg p-6 w-fit max-w-[300px] h-[350px] relative space-y-8">
                   <div
-                    className="flex justify-center mb-20  bg-white p-1 w-fit items-center mx-auto"
+                    className="flex justify-center mb-20 bg-white p-1 w-fit items-center mx-auto"
                     ref={reportRef}
                   >
                     <QRCode
-                      value={`Wallet ID : ${
-                        latestData.Wallet || "N/A"
-                      }, Phone : ${latestData.Phone || "N/A"}`}
+                      value={`Wallet ID : ${latestData.Wallet || "N/A"}, Phone : ${
+                        latestData.Phone || "N/A"
+                      }`}
                       size={100}
                     />
                   </div>
@@ -286,106 +249,6 @@ const Page = () => {
         ) : (
           <p>No data available.</p>
         )}
-      </div>
-
-      <div className="flex justify-center items-center h-screen">
-        {/* <button
-          className="px-4 py-2 bg-purple-900 text-white rounded hover:bg-purple-700 transition"
-          onClick={openModal}
-        >
-          Pay
-        </button> */}
-        <AnimatePresence>
-          {isModalOpen && (
-            <div
-              className="fixed inset-0 bg-gray-400 bg-opacity-40 flex justify-center items-center z-50"
-              onClick={closeModal}
-            >
-              <motion.div
-                className="bg-black p-6 rounded-lg shadow-lg max-w-[500px] w-full"
-                initial={{ y: -100, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                exit={{ y: -100, opacity: 0 }}
-                transition={{ duration: 0.5, ease: "easeOut" }}
-                onClick={(e) => e.stopPropagation()}
-                style={{ overflow: "hidden", wordBreak: "break-word" }} // Add overflow and word-break
-              >
-                <div className="text-white">
-                  <h2>Account</h2>
-
-                  <div>
-                    status: {account.status}
-                    {/* <br />
-                addresses: {JSON.stringify(account.addresses)}
-                <br />
-                chainId: {account.chainId} */}
-                  </div>
-                </div>
-
-                <small className="mb-8">
-                  Wallet Address: {latestData.Wallet}
-                </small>
-
-                <form onSubmit={submit}>
-                  <div className="form-group my-8">
-                    <label
-                      htmlFor="walletAddress"
-                      className="block text-purple-700"
-                    >
-                      Receiver Wallet Address
-                    </label>
-                    <input
-                      type="text"
-                      className="mt-1 w-full p-2 border border-gray-300 rounded text-black"
-                      name="address"
-                      placeholder="0xA0Cf…251e"
-                      required
-                      style={{ overflow: "hidden", wordBreak: "break-word" }} // Handle long input text
-                    />
-                  </div>
-
-                  <div className="form-group mb-4">
-                    <label htmlFor="amount" className="block text-purple-700">
-                      Amount
-                    </label>
-                    <input
-                      type="number"
-                      className="mt-1 w-full p-2 border border-gray-300 rounded text-black"
-                      name="value"
-                      placeholder="0.05"
-                      step="any"
-                      required
-                    />
-                  </div>
-
-                  {isConnected ? (
-                    <div className="text-white">
-                      <button
-                        disabled={isPending}
-                        type="submit"
-                        className="mt-4 w-full text-center text-white bg-purple-700 hover:underline p-2 no-underline"
-                      >
-                        {isPending ? "Confirming..." : "Send"}
-                      </button>
-                    </div>
-                  ) : null}
-                </form>
-
-                {hash && <div>Transaction Hash: {hash}</div>}
-                {isConfirming && <div>Waiting for confirmation...</div>}
-                {isConfirmed && <div>Transaction confirmed.</div>}
-                {error && <div>Error: {error.message}</div>}
-
-                <button
-                  onClick={closeModal}
-                  className="mt-4 w-full text-center text-purple-700 hover:underline border-2 p-2 no-underline"
-                >
-                  Cancel
-                </button>
-              </motion.div>
-            </div>
-          )}
-        </AnimatePresence>
       </div>
     </div>
   );
