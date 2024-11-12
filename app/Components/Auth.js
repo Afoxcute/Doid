@@ -63,6 +63,10 @@ function AuthUser() {
       if (response.ok) {
         const result = await response.json();
         console.log("Success:", result);
+        
+        // Store the data in localStorage before redirecting
+        localStorage.setItem('userCardData', JSON.stringify(payload));
+        
         router.push("/card");
       } else {
         console.error("Failed to create document:", await response.json());

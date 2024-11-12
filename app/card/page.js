@@ -35,44 +35,55 @@ const Page = () => {
   };
 
   const [latestData, setLatestData] = useState({
-    Full_Name: "Yinka",
-    Matric_Number: "CSC/2022/097",
+    Full_Name: "",
+    Matric_Number: "",
     Passport: "",
-    Phone: "09222223",
-    Wallet: "0x3D39D68D2B2fBd98C40a228d56F5205218B9a33D",
+    Phone: "",
+    Wallet: "",
   });
 
   useEffect(() => {
-    const handleData = async () => {
-      try {
-        const response = await fetch("/api/create");
-        if (response.ok) {
-          const data = await response.json();
-          console.log("Fetched Data:", data);
+    const storedData = localStorage.getItem('userCardData');
+    if (storedData) {
+      const userData = JSON.parse(storedData);
+      setLatestData({
+        Full_Name: userData.Full_Name,
+        Matric_Number: userData.Matric_Number,
+        Passport: userData.Passport,
+        Phone: userData.Phone,
+        Wallet: userData.Wallet || "0x3D39D68D2B2fBd98C40a228d56F5205218B9a33D",
+      });
+      setLoading(false);
+    } else {
+      const handleData = async () => {
+        try {
+          const response = await fetch("/api/create");
+          if (response.ok) {
+            const data = await response.json();
+            console.log("Fetched Data:", data);
 
-          setFetchedData(data.data);
-
-          const lastUser = data.data[data.data.length - 1];
-          if (lastUser) {
-            setLatestData({
-              Full_Name: lastUser.Full_Name,
-              Matric_Number: lastUser.Matric_Number,
-              Passport: lastUser.Passport,
-              Phone: lastUser.Phone,
-              Wallet: lastUser.Wallet,
-            });
+            const lastUser = data.data[data.data.length - 1];
+            if (lastUser) {
+              setLatestData({
+                Full_Name: lastUser.Full_Name,
+                Matric_Number: lastUser.Matric_Number,
+                Passport: lastUser.Passport,
+                Phone: lastUser.Phone,
+                Wallet: lastUser.Wallet,
+              });
+            }
+          } else {
+            console.error("Error fetching data:", response.statusText);
           }
-        } else {
-          console.error("Error fetching data:", response.statusText);
+        } catch (error) {
+          console.error("Fetch error:", error);
+        } finally {
+          setLoading(false);
         }
-      } catch (error) {
-        console.error("Fetch error:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+      };
 
-    handleData();
+      handleData();
+    }
   }, []);
 
   const downloadPDF = async () => {
@@ -229,6 +240,7 @@ const Page = () => {
               </button>
             </div>
 
+            {/* Commented out Pay button
             <div className="flex justify-center items-center mt-4">
               <button
                 className="bg-[#220c22] border border-gray-500 text-white w-full md:w-auto h-[48px] mt-4 px-8 mr-3 rounded"
@@ -237,6 +249,7 @@ const Page = () => {
                 Pay
               </button>
             </div>
+            */}
             <br />
 
             <small>
